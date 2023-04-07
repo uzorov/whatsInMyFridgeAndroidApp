@@ -17,6 +17,6 @@ class MainActivityViewModel : ViewModel() {
     }
 
     private fun getAlbums() {
-        _albumsLiveData.value = AlbumsDataProvider.albums.take(3).toMutableList()
+        _albumsLiveData.value = AlbumsDataProvider.albums.toMutableList().asReversed()
     }
 }

@@ -5,6 +5,7 @@ data class Album(
     val title: String,
     val description: String,
     val imageId: Int,
+    val backgroundId: Int,
     val swiped: Boolean = false,
 ) : java.io.Serializable
 
