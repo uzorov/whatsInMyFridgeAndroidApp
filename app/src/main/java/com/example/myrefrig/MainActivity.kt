@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
             val configuration = LocalConfiguration.current
             val screenHeight = configuration.screenHeightDp.dp
-            val cardHeight = screenHeight - 200.dp
+            val cardHeight = screenHeight - 24.dp
 
             MyRefrigTheme {
                 // A surface container using the 'background' color from the theme
@@ -97,49 +97,6 @@ class MainActivity : ComponentActivity() {
                             )
                             {
                                 CardContent(album = album)
-                            }
-                        }
-
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = cardHeight)
-                                .alpha(animateFloatAsState(if (listEmpty.value) 0f else 1f).value)
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    /* TODO Hook to swipe event */
-                                },
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .size(60.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colors.background)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    tint = Color.Gray,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(36.dp)
-                                )
-                            }
-                            IconButton(
-                                onClick = {
-                                    /* TODO Hook to swipe event */
-                                },
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .size(60.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colors.background)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Favorite,
-                                    contentDescription = null,
-                                    tint = Color.Red,
-                                    modifier = Modifier.size(36.dp)
-                                )
                             }
                         }
                     }
