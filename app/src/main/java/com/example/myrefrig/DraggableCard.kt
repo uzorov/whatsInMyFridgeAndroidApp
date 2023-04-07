@@ -3,23 +3,139 @@ package com.example.myrefrig
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.myrefrig.data.model.Album
+import com.example.myrefrig.util.orFalse
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+
+/*
+    Method that displays greeting cards with description of app`s functionality
+     */
+@Composable
+fun Greeting(viewModel: MainActivityViewModel) {
+
+    val ongoingViews = viewModel.albumLiveData.observeAsState()
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+
+    val listEmpty = remember {
+        mutableStateOf(false)
+    }
+
+    val backgroundColor = remember {
+       mutableStateOf(Color.Black.copy(0.8F))
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor.value)
+    ) {
+
+
+
+        ongoingViews.value?.forEachIndexed { index, album ->
+            DraggableCard(
+                item = album,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(screenHeight + 10.dp)
+                    .padding(
+                        top = 16.dp + (index + 2).dp,
+                        start = 8.dp,
+                        end = 8.dp,
+                    ),
+
+                onSwiped = { swipedAlbum ->
+                    if (ongoingViews.value?.isNotEmpty().orFalse()) {
+                        ongoingViews.value?.remove(swipedAlbum)
+                        if (ongoingViews.value?.isEmpty().orFalse()) {
+                            listEmpty.value = true
+                            backgroundColor.value = Color.Transparent
+                        }
+                    }
+                }
+            )
+            {
+                CardContent(album = album)
+            }
+        }
+    }
+
+}
+
+//The filling of card
+//Its essential that method is inside the MainActivity class
+//because it has to call getResources() method
+@Composable
+fun CardContent(album: Album) {
+    Box(
+        modifier = Modifier.background(album.backgroundColor),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+
+            Image(
+                painter = painterResource(album.imageId),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                modifier = Modifier.size(180.dp)
+            )
+            Text(
+
+                text = album.title,
+                color = Color.White,
+                fontSize = 38.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.padding(10.dp),
+                textAlign = TextAlign.Center
+            )
+            Text(
+
+                text = album.description,
+                color = Color.White,
+                fontSize = 20.sp,
+                fontFamily = FontFamily.Cursive,
+                modifier = Modifier.padding(10.dp),
+                textAlign = TextAlign.Left
+            )
+
+
+        }
+    }
+}
 
 //Draggable card that has some passed content to display
 @Composable
@@ -41,7 +157,7 @@ fun DraggableCard(
     if (abs(swipeX.value) < swipeXRight - 50f) {
         val rotationFraction = (swipeX.value / 60).coerceIn(-40f, 40f)
         Card(
-            elevation = 16.dp,
+            elevation = 4.dp,
             modifier = modifier
                 .dragContent(
                     swipeX = swipeX,
@@ -55,7 +171,6 @@ fun DraggableCard(
                     rotationZ = rotationFraction,
                 )
                 .clip(RoundedCornerShape(30.dp))
-            // .border(width = 0.2.dp, color = Color.Black, shape = RoundedCornerShape(20.dp))
 
         ) {
             content()
