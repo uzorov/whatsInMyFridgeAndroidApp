@@ -43,7 +43,7 @@ fun BottomNavigationBar(
                 onClick = { OnItemClick(item) },
                 selectedContentColor = Color.Blue.copy(1F),
                 unselectedContentColor = Color.Gray.copy(0.9f),
-                alwaysShowLabel = false,
+                alwaysShowLabel = true,
                 label = { Text(
                     text = item.name,
                     textAlign = TextAlign.Center,

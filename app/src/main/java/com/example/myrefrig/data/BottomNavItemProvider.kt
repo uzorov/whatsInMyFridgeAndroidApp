@@ -2,9 +2,7 @@ package com.example.myrefrig.data
 
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.myrefrig.data.model.BottomNavItem
 
@@ -13,13 +11,19 @@ val bottomNavItems : List<BottomNavItem> = listOf(
     BottomNavItem(
         "Продукты",
         "home",
-        Icons.Default.Home,
-        10
+        Icons.Default.ShoppingCart,
+        0
     ),
     BottomNavItem(
         "Рецепты",
         "recipes",
         Icons.Default.Search,
+        0
+    ),
+    BottomNavItem(
+        "Избранное",
+        "favorite",
+        Icons.Default.FavoriteBorder,
         0
     ),
     BottomNavItem(

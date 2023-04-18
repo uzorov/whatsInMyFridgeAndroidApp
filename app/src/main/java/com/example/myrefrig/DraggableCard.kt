@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myrefrig.data.model.Album
 import com.example.myrefrig.util.orFalse
 import kotlinx.coroutines.launch
@@ -43,25 +44,19 @@ import kotlin.math.abs
     Method that displays greeting cards with description of app`s functionality
      */
 @Composable
-fun Greeting(viewModel: MainActivityViewModel) {
+fun Greeting(viewModel: MainActivityViewModel, navController: NavController) {
 
     val ongoingViews = viewModel.albumLiveData.observeAsState()
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
-    val listEmpty = remember {
-        mutableStateOf(false)
-    }
+    val backgroundColor = viewModel.backgroundColor.observeAsState()
 
-    val backgroundColor = remember {
-       mutableStateOf(Color.Black.copy(0.8F))
-    }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor.value)
+            .background(backgroundColor.value!!)
     ) {
-
 
 
         ongoingViews.value?.forEachIndexed { index, album ->
@@ -79,10 +74,11 @@ fun Greeting(viewModel: MainActivityViewModel) {
                 onSwiped = { swipedAlbum ->
                     if (ongoingViews.value?.isNotEmpty().orFalse()) {
                         ongoingViews.value?.remove(swipedAlbum)
-                        if (ongoingViews.value?.isEmpty().orFalse()) {
-                            listEmpty.value = true
-                            backgroundColor.value = Color.Transparent
-                        }
+                    }
+                    else
+                    {
+                        viewModel.updateBackgroundColor()
+                        navController.navigate("scaffold")
                     }
                 }
             )
@@ -105,16 +101,13 @@ fun CardContent(album: Album) {
     ) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-
             Image(
                 painter = painterResource(album.imageId),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 contentDescription = null,
                 modifier = Modifier.size(180.dp)
             )
             Text(
-
                 text = album.title,
                 color = Color.White,
                 fontSize = 38.sp,
@@ -123,7 +116,6 @@ fun CardContent(album: Album) {
                 textAlign = TextAlign.Center
             )
             Text(
-
                 text = album.description,
                 color = Color.White,
                 fontSize = 20.sp,
@@ -131,8 +123,6 @@ fun CardContent(album: Album) {
                 modifier = Modifier.padding(10.dp),
                 textAlign = TextAlign.Left
             )
-
-
         }
     }
 }

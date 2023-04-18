@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MyRefrig</string>
+    <string name="my">МОЙ</string>
+    <string name="refrigarator">Холодильник</string>
+    <string name="discoverRec">Найдите рецепт, который поднимет Вам настроение</string>
+    <string name="discoverNew">Исследуйте новое</string>
+    <string name="Open">Открыть</string>
 </resources>

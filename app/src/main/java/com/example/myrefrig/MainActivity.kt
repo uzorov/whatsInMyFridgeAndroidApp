@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -53,7 +54,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val viewModel: MainActivityViewModel = viewModel()
+            val viewModel: MainActivityViewModel by viewModels()
 
             MyRefrigTheme {
                 // A surface container using the 'background' color from the theme
@@ -64,50 +65,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     //Calling the greeting method, that represents ongoing views, which explaining
                     //functions the app has
-
-
-
-
                     val navController = rememberNavController()
 
+                    InitialNavigation(navController = navController, viewModel = viewModel)
 
 
-                    Scaffold(
-                        bottomBar = {
-                            BottomNavigationBar(
-                                items = viewModel.bottomItems,
-                                navController = navController,
-                                OnItemClick = {
-                                    navController.navigate(it.route)
-                                })
-                        },
-
-                        content = {
-
-
-                            Box(modifier = Modifier.padding(it)) {
-                                Navigation(navController = navController)
-                            }
-
-
-                        }
-                    )
-
-                    Greeting(viewModel = viewModel)
                 }
             }
-        }
-    }
-
-
-
-
-    @Preview(showBackground = true)
-    @Composable
-    fun DefaultPreview() {
-        MyRefrigTheme {
-            val viewModel: MainActivityViewModel = viewModel()
-            Greeting(viewModel = viewModel)
         }
     }
 }
