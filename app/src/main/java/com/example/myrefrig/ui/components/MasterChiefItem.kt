@@ -16,8 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myrefrig.data.model.Recipe
+import com.example.myrefrig.ui.theme.BlueViolet3
+import com.example.myrefrig.ui.theme.Gray
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MasterChiefItem(masterChiefRecipe: Recipe, itemSize: Dp) {
     Box(modifier = Modifier.padding(horizontal = 7.5.dp, vertical = 7.5.dp)) {
@@ -25,7 +30,7 @@ fun MasterChiefItem(masterChiefRecipe: Recipe, itemSize: Dp) {
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
                 .size(itemSize)
-                .background(color = masterChiefRecipe.background_color)
+                .background(color = Gray)
         ) {
 
 
@@ -35,7 +40,6 @@ fun MasterChiefItem(masterChiefRecipe: Recipe, itemSize: Dp) {
                     masterChiefRecipe.title,
                     style = MaterialTheme.typography.h2,
                     fontSize = 18.sp,
-                    lineHeight = 26.sp,
                     color = masterChiefRecipe.textColor,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -46,22 +50,24 @@ fun MasterChiefItem(masterChiefRecipe: Recipe, itemSize: Dp) {
                     masterChiefRecipe.description,
                     modifier = Modifier.padding(start = 10.dp),
                     fontSize = 12.sp,
+                    maxLines = 2,
                     color = masterChiefRecipe.textColor.copy(0.8f),
                 )
 
-
+                GlideImage(
+                    model = masterChiefRecipe.imageURL,
+                    contentDescription = "MasterChiefRecipes",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .width(80.dp)
+                        .height(110.dp)
+                        .padding(5.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                )
             }
 
-            Image(
-                painter = painterResource(id = masterChiefRecipe.imageURL),
-                contentDescription = "MasterChiefRecipes",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .width(80.dp)
-                    .height(110.dp)
-                    .padding(end = 5.dp)
-            )
+
         }
     }
 }

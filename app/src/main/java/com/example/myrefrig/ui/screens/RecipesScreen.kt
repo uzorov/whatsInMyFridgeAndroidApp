@@ -19,7 +19,7 @@ import com.example.myrefrig.ui.theme.LittleBlack
 
 @Composable
 fun RecipesScreen() {
-    Box(
+   /* Box(
 
         modifier = Modifier
             .fillMaxSize()
@@ -81,5 +81,5 @@ fun RecipesScreen() {
 
                 )
         }
-    }
+    }*/
 }

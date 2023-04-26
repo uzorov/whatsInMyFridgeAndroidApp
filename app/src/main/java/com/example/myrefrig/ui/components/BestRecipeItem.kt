@@ -19,11 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myrefrig.R
 import com.example.myrefrig.data.model.Recipe
 import com.example.myrefrig.ui.theme.DeepBlue
 import com.example.myrefrig.ui.theme.TextWhite
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun BestRecipeItem(
     bestRecipe: Recipe,
@@ -58,12 +61,12 @@ fun BestRecipeItem(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Start,
-                        modifier = Modifier.weight(0.6f)
+                        modifier = Modifier.weight(0.6f).padding(end = 4.dp)
                     )
 
-                    Image(
+                    GlideImage(
                         contentScale = ContentScale.Crop,
-                        painter = painterResource(id = bestRecipe.imageURL),
+                        model = bestRecipe.imageURL,
                         contentDescription = bestRecipe.title,
                         modifier = Modifier
                             .size(50.dp)
@@ -83,7 +86,8 @@ fun BestRecipeItem(
                     text = bestRecipe.description,
                     color = textColor,
                     style = MaterialTheme.typography.body1,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    maxLines = 3
                 )
 
                 Row(

@@ -203,7 +203,7 @@ fun SearchableExpandedDropDownMenu(
                         DropdownMenuItem(
                             onClick = {
                                 selectedOptionText = selectedItem.name
-                                selectedLeadingImage = selectedItem.image
+                                selectedLeadingImage = 3
                                 onDropDownItemSelected(selectedItem)
                                 searchedOption = ""
                                 expanded = false

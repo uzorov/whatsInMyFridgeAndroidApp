@@ -5,4 +5,5 @@
     <string name="discoverRec">Найдите рецепт, который поднимет Вам настроение</string>
     <string name="discoverNew">Исследуйте новое</string>
     <string name="Open">Открыть</string>
+    <string name="recommendation_to_cook">Рекомендуем приготовить</string>
 </resources>

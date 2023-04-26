@@ -2,7 +2,7 @@ package com.example.myrefrig.data.model
 
 data class Ingridient(
     val id : Int,
-    val expired_data : String,
     val name : String,
-    val image : Int
+    val image : String,
+    val amount_of_weeks_until_expired : Int
 )
