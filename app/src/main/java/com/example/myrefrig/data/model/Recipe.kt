@@ -7,7 +7,7 @@ data class Recipe(
     val id: Int,
     val description: String,
     val calories: Int,
-    val ingridients: List<Ingridient>,
+    val ingredients: List<Ingredient>,
     val title: String,
     val imageURL: String,
     val background_color: Color = Color.Gray,

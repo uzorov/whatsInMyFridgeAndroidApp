@@ -3,7 +3,6 @@ package com.example.myrefrig
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -23,17 +21,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myrefrig.ui.components.HomeScreen
-import com.example.myrefrig.ui.screens.RecipesScreen
+import com.example.myrefrig.ui.screens.recipes_screen.RecipesScreen
 import kotlinx.coroutines.delay
 
 
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "recipes") {
+    NavHost(navController = navController, startDestination = "home") {
 
         composable("home") {
-
-            RecipesScreen()
+            RecipesScreen(navController)
         }
         composable("recipes") {
             HomeScreen()
@@ -107,7 +104,7 @@ fun SplashScreen(navController: NavController) {
 
         //TODO: Find out if the user had launch the app before and make decision should we or should not show the greeting
 
-        val userSawGreetingBefore = false
+        val userSawGreetingBefore = true
 
         if (!userSawGreetingBefore)
             navController.navigate("greeting")
