@@ -1,13 +1,16 @@
 package com.example.myrefrig.ui.screens.home_screen
 
-import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.example.myrefrig.data.Database
 import com.example.myrefrig.data.RecipeDataProvider
+import com.example.myrefrig.data.Tags
 import com.example.myrefrig.data.model.Recipe
+import com.google.gson.reflect.TypeToken
 
-class HomeScreenViewModel : ViewModel() {
+class HomeScreenViewModel(application: Application) : AndroidViewModel(application) {
+
+    val database = Database(application, Tags.FAVORITE_RECIPES, object : TypeToken<List<Recipe>>() {})
 
     private val _currentBestRecipes: MutableList<Recipe> = mutableListOf()
     val currentBestRecipes: List<Recipe>

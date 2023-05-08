@@ -1,8 +1,6 @@
 package com.example.myrefrig.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -14,25 +12,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myrefrig.data.model.Recipe
-import com.example.myrefrig.ui.theme.LightRed
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun RecommendedRecipeItem(recommendationRecipe: Recipe) {
+fun RecommendedRecipeItem(recommendationRecipe: Recipe, modifier: Modifier) {
 
     BoxWithConstraints(
-        modifier = Modifier
-            .padding(end = 7.5.dp)
-            .aspectRatio(1f)
-            .clip(RoundedCornerShape(10.dp))
-            .background(LightRed)
-            .wrapContentHeight()
-            .wrapContentWidth()
+        modifier = modifier
     ) {
 
 

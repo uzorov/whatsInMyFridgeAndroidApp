@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -16,17 +15,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.example.myrefrig.data.IngredientDataProvider
 import com.example.myrefrig.data.model.Ingredient
-import com.example.myrefrig.data.model.IngredientDataProvider
 import com.example.myrefrig.ui.theme.Blue
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Composable
 fun SearchView(state: MutableState<TextFieldValue>) {
@@ -66,7 +65,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
             }
         },
         singleLine = true,
-        shape = RoundedCornerShape(10.dp), // The TextFiled has rounded corners top left and right by default
+        shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.White,
             cursorColor = Color.White,

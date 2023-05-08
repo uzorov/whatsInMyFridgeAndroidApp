@@ -1,35 +1,37 @@
 package com.example.myrefrig.ui.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myrefrig.data.model.Recipe
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myrefrig.R
+import com.example.myrefrig.data.RecipeDataProvider
+import com.example.myrefrig.data.model.Recipe
 import com.example.myrefrig.ui.screens.home_screen.HomeScreenViewModel
-import com.example.myrefrig.ui.theme.*
+import com.example.myrefrig.ui.theme.Blue
+import com.example.myrefrig.ui.theme.Gray
+import com.example.myrefrig.ui.theme.LightRed
+import com.example.myrefrig.ui.theme.TextWhite
+import com.example.myrefrig.util.NoPaddingAlertDialog
 import com.guru.composecookbook.meditation.ui.spacerHeight10
 import com.guru.composecookbook.meditation.ui.spacerHeight20
 import com.guru.composecookbook.verticalgrid.StaggeredVerticalGrid
@@ -37,24 +39,40 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.launch
 
+/*
+This file contains the Composable functions for the Home Screen UI.
+*/
 
+
+/**
+ * Composable function for the Home Screen that displays the UI content. */
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeScreenViewModel) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
 
-        HomeScreenContent()
+        HomeScreenContent(viewModel)
     }
 }
 
-@Composable
-fun HomeScreenContent() {
 
-    val viewModel: HomeScreenViewModel = viewModel()
+/**
+
+ * Composable function for the Home Screen UI content. */
+@Composable
+fun HomeScreenContent(viewModel: HomeScreenViewModel) {
+    val recipeOpenState = remember { mutableStateOf(false) }
+    val selectedRecipe = remember {
+        mutableStateOf(RecipeDataProvider.recepies.take(1)[0])
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
+
+     //Window that will be displayed only if recipe item was clicked
+          OpenRecipeDetailed(recipeOpenState = recipeOpenState, recipe = selectedRecipe.value, viewModel)
+
         LazyColumn(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start,
@@ -64,18 +82,27 @@ fun HomeScreenContent() {
                 spacerHeight10()
                 discoverNewRecepiesSection()
                 spacerHeight20()
-                BestRecepiesSection(viewModel.currentBestRecipes)
+                BestRecepiesSection(viewModel.currentBestRecipes, recipeOpenState, selectedRecipe)
                 spacerHeight20()
-                RecommendationSection(viewModel.currentRecommendedRecipes)
+                RecommendationSection(viewModel.currentRecommendedRecipes, recipeOpenState, selectedRecipe)
                 spacerHeight20()
-                MasterChiefsSection(viewModel.currentChiefRecipes)
+                MasterChiefsSection(viewModel.currentChiefRecipes, recipeOpenState, selectedRecipe)
             }
         }
     }
 }
 
+
+/**
+
+ * Composable function for the recommendation section of the Home Screen UI.
+ * @param recommendationList The list of recommended recipes. */
 @Composable
-fun RecommendationSection(recommendationList: List<Recipe>) {
+fun RecommendationSection(
+    recommendationList: List<Recipe>,
+    recipeOpenState: MutableState<Boolean>,
+    selectedRecipe: MutableState<Recipe>
+) {
     Column {
         Text(
             modifier = Modifier.padding(start = 15.dp),
@@ -90,15 +117,34 @@ fun RecommendationSection(recommendationList: List<Recipe>) {
             contentPadding = PaddingValues(horizontal = 7.dp),
         ) {
             items(recommendationList.size) {
-                RecommendedRecipeItem(recommendationRecipe = recommendationList[it])
+                RecommendedRecipeItem(
+                    recommendationRecipe = recommendationList[it], Modifier
+                        .padding(end = 7.5.dp)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(LightRed)
+                        .wrapContentHeight()
+                        .wrapContentWidth()
+                        .clickable {
+                            selectedRecipe.value = recommendationList[it]
+                            recipeOpenState.value = true
+                        }
+                )
             }
         }
     }
 }
 
+/**
 
+ * Composable function for the Best Recipes section of the Home Screen UI.
+ * @param bestRecipesList The list of best recipes. */
 @Composable
-fun BestRecepiesSection(bestRecipesList: List<Recipe>) {
+fun BestRecepiesSection(
+    bestRecipesList: List<Recipe>,
+    recipeOpenState: MutableState<Boolean>,
+    selectedRecipe: MutableState<Recipe>
+) {
 
     Text(
         modifier = Modifier.padding(start = 15.dp),
@@ -123,14 +169,28 @@ fun BestRecepiesSection(bestRecipesList: List<Recipe>) {
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(10.dp))
                     .background(Blue)
-                    .wrapContentHeight(), TextWhite
+                    .wrapContentHeight()
+                    .clickable
+                    {
+                        selectedRecipe.value = bestRecipesList[index]
+                        recipeOpenState.value = true
+                    }, TextWhite
+
             )
         }
     }
 }
 
+/**
+
+ * Composable function for the Master Chefs section of the Home Screen UI.
+ * @param masterChiefsRecipes The list of master chef recipes. */
 @Composable
-fun MasterChiefsSection(masterChiefsRecipes: List<Recipe>) {
+fun MasterChiefsSection(
+    masterChiefsRecipes: List<Recipe>,
+    recipeOpenState: MutableState<Boolean>,
+    selectedRecipe: MutableState<Recipe>
+) {
     val scope = rememberCoroutineScope()
     val state = rememberLazyListState()
     state.disableScrolling(scope)
@@ -149,13 +209,26 @@ fun MasterChiefsSection(masterChiefsRecipes: List<Recipe>) {
         val itemSize: Dp = (LocalConfiguration.current.screenWidthDp.dp / 2) - 23.dp
         StaggeredVerticalGrid(maxColumnWidth = 250.dp) {
             masterChiefsRecipes.forEachIndexed { index, _ ->
-                MasterChiefItem(masterChiefRecipe = masterChiefsRecipes[index], itemSize)
+                MasterChiefItem(
+                    masterChiefRecipe = masterChiefsRecipes[index],
+                    itemSize,
+                    Modifier
+                        .padding(horizontal = 7.5.dp, vertical = 7.5.dp)
+                        .clickable {
+                            selectedRecipe.value = masterChiefsRecipes[index]
+                            recipeOpenState.value = true
+                        }
+                )
             }
         }
     }
 }
 
 
+/**
+
+ * Extension function for [LazyListState] that disables scrolling.
+ * @param scope The coroutine scope to launch the scroll operation with. */
 fun LazyListState.disableScrolling(scope: CoroutineScope) {
     scope.launch {
         scroll(scrollPriority = MutatePriority.PreventUserInput) {
@@ -164,6 +237,9 @@ fun LazyListState.disableScrolling(scope: CoroutineScope) {
     }
 }
 
+/**
+
+ * Composable function for the "Discover New Recipes" section of the Home Screen UI. */
 @Composable
 fun discoverNewRecepiesSection() {
     Column(
@@ -185,6 +261,9 @@ fun discoverNewRecepiesSection() {
 }
 
 
+/**
+
+ * Composable function for the app title section of the Home Screen UI. */
 @Composable
 fun appTitle() {
     Row(
@@ -201,5 +280,108 @@ fun appTitle() {
             contentDescription = "App Icon",
             modifier = Modifier.size(100.dp)
         )
+    }
+}
+
+
+@Composable
+fun OpenRecipeDetailed(recipeOpenState: MutableState<Boolean>, recipe: Recipe, homeScreenViewModel : HomeScreenViewModel) {
+    if (recipeOpenState.value) {
+        NoPaddingAlertDialog(
+            onDismissRequest = {
+                recipeOpenState.value = false
+            },
+            confirmButton = {
+
+            },
+            dismissButton = {
+
+            },
+            backgroundColor = Color.Transparent,
+            title = {
+            },
+            text = {
+                   RecipeItem(recipe = recipe, recipeOpenState, homeScreenViewModel)
+            }
+            ,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun RecipeItem(recipe: Recipe, recipeOpenState : MutableState<Boolean>, viewModel: HomeScreenViewModel) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = 8.dp,
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+
+    ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+
+            ) {
+            GlideImage(
+                model = recipe.imageURL
+                ,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(shape = RoundedCornerShape(16.dp))
+                    .align(Alignment.CenterHorizontally)
+
+            )
+
+            Text(
+                text = recipe.title,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            Text(
+                text = recipe.description,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(bottom = 36.dp)
+            )
+
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                TextButton(
+                    modifier = Modifier.padding(start = 6.dp),
+                    onClick = { recipeOpenState.value = false },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Blue,
+                        backgroundColor = Color.Transparent
+                    )
+                ) {
+                    Text(text = "Назад")
+
+                }
+
+                TextButton(
+                    modifier = Modifier.padding(end = 6.dp),
+                    onClick = { recipeOpenState.value = false
+                       val favor_rec = viewModel.database.getListOfObjects().toMutableList()
+                        favor_rec.add(recipe)
+                        viewModel.database.saveListOfObjects(
+                           favor_rec
+                        )
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Blue,
+                        backgroundColor = Color.Transparent
+                    )
+                ) {
+                    Text(text = "В избранное")
+                }
+            }
+        }
     }
 }

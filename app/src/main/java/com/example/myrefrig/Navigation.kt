@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -21,22 +20,26 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myrefrig.ui.components.HomeScreen
+import com.example.myrefrig.ui.screens.authorization_screen.ProfileScreen
+import com.example.myrefrig.ui.screens.favor_screen.FavoriteScreen
+import com.example.myrefrig.ui.screens.home_screen.HomeScreenViewModel
 import com.example.myrefrig.ui.screens.recipes_screen.RecipesScreen
+import com.example.myrefrig.ui.screens.recipes_screen.RecipesScreenViewModel
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun Navigation(navController: NavHostController) {
+fun Navigation(navController: NavHostController, recipesScreenViewModel: RecipesScreenViewModel, homeScreenViewModel: HomeScreenViewModel) {
     NavHost(navController = navController, startDestination = "home") {
 
         composable("home") {
-            RecipesScreen(navController)
+            RecipesScreen(recipesScreenViewModel)
         }
         composable("recipes") {
-            HomeScreen()
+            HomeScreen(homeScreenViewModel)
         }
         composable("favorite") {
-            FavoriteScreen()
+            FavoriteScreen(homeScreenViewModel)
         }
         composable("profile") {
             ProfileScreen()
@@ -46,7 +49,12 @@ fun Navigation(navController: NavHostController) {
 }
 
 @Composable
-fun InitialNavigation(navController: NavHostController, viewModel: MainActivityViewModel) {
+fun InitialNavigation(
+    navController: NavHostController,
+    viewModel: MainActivityViewModel,
+    recipesScreenViewModel: RecipesScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel
+) {
     NavHost(navController = navController, startDestination = "splash_screen") {
         composable("splash_screen") {
             SplashScreen(navController)
@@ -57,14 +65,18 @@ fun InitialNavigation(navController: NavHostController, viewModel: MainActivityV
         }
 
         composable("scaffold") {
-            ScaffoldScreen(viewModel = viewModel)
+            ScaffoldScreen(viewModel = viewModel, recipesScreenViewModel, homeScreenViewModel)
         }
     }
 
 }
 
 @Composable
-fun ScaffoldScreen(viewModel: MainActivityViewModel) {
+fun ScaffoldScreen(
+    viewModel: MainActivityViewModel,
+    recipesScreenViewModel: RecipesScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel
+) {
     val navHostController = rememberNavController()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -79,7 +91,7 @@ fun ScaffoldScreen(viewModel: MainActivityViewModel) {
             },
             content = {
                 Box(modifier = Modifier.padding(it)) {
-                    Navigation(navController = navHostController)
+                    Navigation(navController = navHostController, recipesScreenViewModel, homeScreenViewModel)
                 }
             }
         )
@@ -104,7 +116,7 @@ fun SplashScreen(navController: NavController) {
 
         //TODO: Find out if the user had launch the app before and make decision should we or should not show the greeting
 
-        val userSawGreetingBefore = true
+        val userSawGreetingBefore = false
 
         if (!userSawGreetingBefore)
             navController.navigate("greeting")
@@ -128,24 +140,3 @@ fun SplashScreen(navController: NavController) {
 }
 
 
-
-
-@Composable
-fun ProfileScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Экран с описанием профиля")
-    }
-}
-
-@Composable
-fun FavoriteScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Экран с избранными рецептами")
-    }
-}

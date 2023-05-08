@@ -58,7 +58,7 @@ fun NoPaddingAlertDialog(
 
             Box(
                 Modifier
-                    .fillMaxSize(),
+                    .fillMaxWidth(),
 
                 contentAlignment = Alignment.BottomCenter
             ) {
